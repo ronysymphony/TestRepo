@@ -1,0 +1,569 @@
+﻿@using Shampan.Models
+@model List<Shampan.Models.BranchProfile>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@Html.Partial("_Header",new HeaderModel(){ HeaderName = "Dashboard", BreadCrums = new Dictionary<string, string>()
+{
+    {"/Home","Home"},
+    {"","Dashboard"}
+}})
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+
+<style>
+    #custom, .table td,
+    .table th {
+        padding: 0.25rem;
+    }
+
+    /* Reduce font size */
+    #custom, .table th,
+    .table td {
+        font-size: 12px;
+    }
+
+    #custom, .table th,
+    #custom, .table td {
+        font-size: 13px;
+    }
+
+    .table-green-bg {
+        background-color: green;
+    }
+
+    .percentage-circle {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .percentage-text {
+        font-size: 23px;
+        color: black;
+    }
+
+
+
+
+    .chart-text {
+        position: absolute;
+        top: 32%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 16px;
+        color: #333;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .cardforright {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        text-align: center;
+        background-color: #8bc34a;
+        width: 400px; /* Set the width to your desired value */
+        height: 290px; /* Set the height to your desired value */
+    }
+
+    .card-content {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .arrow {
+       
+        margin-right: 10px;
+        font-size:24px;
+        font-weight: bold;
+    }
+
+    .text {
+        text-align: left;
+    }
+
+
+    .branch-coverage {
+        background-color: #8bc34a; /* Set the desired background color */
+        color: white; /* Set the text color to white to make it visible on the background */
+        padding: 5px; /* Add padding to create space around the text */
+        border-radius: 5px; /* Add rounded corners to the background */
+        /*display: inline-block; */
+    }
+
+    .Engagments1{
+        background-color: #8bc34a; /* Set the desired background color */
+        color: white; /* Set the text color to white to make it visible on the background */
+        padding: 5px; /* Add padding to create space around the text */
+        border-radius: 5px; /* Add rounded corners to the background */
+    }
+
+    .Engagments2{
+        background-color: #8bc34a; /* Set the desired background color */
+        color: white; /* Set the text color to white to make it visible on the background */
+        padding: 5px; /* Add padding to create space around the text */
+        border-radius: 5px; /* Add rounded corners to the background */
+    }
+
+
+</style>
+
+
+
+
+<div class="container-fluid">
+
+
+    <div class="row">
+
+        <div class="col-md-3">
+
+            @*<div id="circle-progress-container"></div>*@
+
+            @*<canvas id="myChart" style="width:100%;max-width:800px"></canvas>*@
+            <canvas id="myChart" width="200" height="200"></canvas>
+            <div class="chart-text">
+                <div class="chart-text-part">IAP</div>
+                <div class="chart-text-part">Completion</div>
+                <div class="chart-text-part">Nov 2022</div>
+            </div>
+
+
+            <div class="row mt-2">
+                <div class="column">
+                    <div class="cardforright">
+                        <div class="card-content">
+                            
+                            <div class="text">
+                                <h5><span class="arrow">&rarr;</span>Prepament Reviewed : <b>2026</b></h5>
+                                <h5><span class="arrow">&rarr;</span>Uncertifies Communicated :  <b>18889</b></h5>
+                                <h5><span class="arrow">&rarr;</span>Financial Impact :  <b>BDT:6.6Million</b></h5>
+                                <h5><span class="arrow">&rarr;</span>IAC Budget :  <b>50%</b></h5>
+                                <h5><span class="arrow">&rarr;</span>IAC Contribution to Reveniew :  <b>Next Business BDT 1.4 Million</b></h5>
+ 
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            @*<div class="row mt-2">
+                <div class="column">
+                    <div class="cardforright">
+
+                        <div class="arrow">
+                            <span>&rarr;</span>
+                        </div>
+
+                        <h3>Card 1</h3>
+                        <p>Some text</p>
+                        <p>Some text</p>
+                    </div>
+                </div>
+            </div>*@
+
+
+
+        </div>
+        <div class="col-md-6">
+
+
+
+            <table class="table table-info" id="custom">
+                <thead>
+                    <tr>
+                        <th scope="col">Audit Component</th>
+                        <th scope="col">Plan</th>
+                        <th scope="col">Ongoing</th>
+                        <th scope="col">Completed</th>
+                        <th scope="col">Remaining</th>
+                        <th scope="col"> % (Completed + Ongoing)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Branches</th>
+                        <td>34</td>
+                        <td>8</td>
+                        <td>0</td>
+                        <td>8</td>
+                        <td>69%</td>
+
+                    </tr>
+                    <tr>
+                        <th scope="row">Department</th>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>5</td>
+                        <td>78</td>
+                        <td>90%</td>
+
+                    </tr>
+                    <tr>
+                        <th scope="row">Subsidiary</th>
+                        <td>5</td>
+                        <td>0</td>
+                        <td>3</td>
+                        <td>6</td>
+                        <td>56%</td>
+
+                    </tr>
+                    <tr>
+                        <th scope="row">Follow-Up</th>
+                        <td>6</td>
+                        <td>89</td>
+                        <td>45</td>
+                        <td>8</td>
+                        <td>67%</td>
+
+                    </tr>
+                    <tr>
+                        <th scope="row">Underwriting</th>
+                        <td>3</td>
+                        <td>67</td>
+                        <td>8</td>
+                        <td>9</td>
+                        <td>90%</td>
+
+                    </tr>
+                    <tr>
+                        <th scope="row">Petty Cash HO</th>
+                        <td>8</td>
+                        <td>0</td>
+                        <td>34</td>
+                        <td>2</td>
+                        <td>67</td>
+
+                    </tr>
+                    <tr>
+                        <th scope="row">Petty Cash Branch</th>
+                        <td>7</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>0</td>
+                        <td>67%</td>
+
+                    </tr>
+                    <tr>
+                        <th scope="row">Monthly BCO Reporting</th>
+                        <td>78</td>
+                        <td>6</td>
+                        <td>0</td>
+                        <td>4</td>
+                        <td>90%</td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+
+        </div>
+        <div class="col-md-3">
+
+            <div class="branch-coverage">Branch Coverage </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p><span class="location-icon">&#x1F4CD;</span> 17 | 20 Dhaka</p>
+                    <p><span class="location-icon">&#x1F4CD;</span> 3 | 3 Khulna</p>
+                    <p><span class="location-icon">&#x1F4CD;</span> 2 | 2 Rangpur</p>
+                    <p><span class="location-icon">&#x1F4CD;</span> 17 | 20 Dhaka</p>
+
+                </div>
+                <div class="col-md-6">
+                    <p><span class="location-icon">&#x1F4CD;</span> 17 | 20 Dhaka</p>
+                    <p><span class="location-icon">&#x1F4CD;</span> 17 | 20 Dhaka</p>
+                    <p><span class="location-icon">&#x1F4CD;</span> 3 | 3 Rajshshi</p>
+                    <p><span class="location-icon">&#x1F4CD;</span> 2 | 2 Mymonshig</p>
+                </div>
+
+            </div>
+            <div class="branch-coverage my-2"> Few Mentionable Other Engagements </div>
+
+            <div class="Engagments1">1. Special Engagements</div>
+
+        
+            <p><span class="icon">&#x1F4DC;</span><b> Variour investication is issued to management </b></p>
+            <p><span class="icon">&#x1F4DC;</span> <b>Involvemennt in multiple engagemen as per management requirments</b></p>
+            <p><span class="icon">&#x1F4DC;</span> <b>Automation of Audit Operntaion (Audit Softwate)</b></p>
+            <p><span class="icon">&#x1F4DC;</span><b> Variour investication is issued to management </b></p>
+            <p><span class="icon">&#x1F4DC;</span> <b>IAC Induction Session </b></p>
+
+
+            <div class="Engagments2">2. Add-hoc Engagements </div>
+
+            <p><span class="icon">&#x1F4DC;</span> <b>IAC Induction Session </b></p>
+            <p><span class="icon">&#x1F4DC;</span> <b>Strengic Session</b></p>
+            <p><span class="icon">&#x1F4DC;</span> <b>Automation of Audit Operntaion (Audit Softwate)</b></p>
+            <p><span class="icon">&#x1F4DC;</span> <b>Involvemennt in multiple engagemen as per management requirments</b></p>
+            <p><span class="icon">&#x1F4DC;</span> <b>IAC Induction Session </b></p>
+
+        </div>
+
+    </div>
+
+
+
+    @*<!-- Small boxes (Stat box) -->
+    <div class="row">
+    <div class="col-lg-3 col-4">
+    <!-- small box -->
+    <div class="small-box bg-info">
+    <div class="inner">
+    <h3>150</h3>
+
+    <p>Planned Audit</p>
+    </div>
+    <div class="icon">
+    <i class="ion ion-bag"></i>
+    </div>
+    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-4">
+    <!-- small box -->
+    <div class="small-box bg-success">
+    <div class="inner">
+    <h3>53<sup style="font-size: 20px"></sup></h3>
+
+    <p>Un-Planned Audit</p>
+    </div>
+    <div class="icon">
+    <i class="ion ion-stats-bars"></i>
+    </div>
+    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+    </div>
+    <div class="col-lg-3 col-4">
+    <!-- small box -->
+    <div class="small-box bg-success">
+    <div class="inner">
+    <h3>48<sup style="font-size: 20px">%</sup></h3>
+
+    <p>Successful Audit Completed</p>
+    </div>
+    <div class="icon">
+    <i class="ion ion-stats-bars"></i>
+    </div>
+    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+    </div>
+
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-warning">
+    <div class="inner">
+    <h3>44</h3>
+
+    <p>User Registrations</p>
+    </div>
+    <div class="icon">
+    <i class="ion ion-person-add"></i>
+    </div>
+    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-danger">
+    <div class="inner">
+    <h3>65</h3>
+
+    <p>Unique Visitors</p>
+    </div>
+    <div class="icon">
+    <i class="ion ion-pie-graph"></i>
+    </div>
+    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+    </div>
+    <!-- ./col -->
+    </div>*@
+
+
+
+
+
+
+
+
+    @*    <textarea id="ckEdit"></textarea>
+
+    <textarea id="tinyMCE"></textarea>*@
+
+    <div id="calender">
+    </div>
+
+    @*<div id="chart"></div>*@
+
+
+    @*Add  Audit Response*@
+    <div class="card card-secondary">
+        <div class="card-header">
+            <h3 class="card-title">Audit Response</h3>
+        </div>
+        <div class="card-body">
+
+
+            <table class="table table-bordered" id="AuditResponseDetails" style="width: 100% !important;">
+                <thead>
+                    <tr>
+
+                        <th>Audit Name</th>
+                        <th>Issue Name</th>
+                        <th>Issue Priority</th>
+                        <th>Date Of Summission</th>
+                        <th>Action</th>
+
+
+
+
+                    </tr>
+                </thead>
+                <tbody id="BranchFeedbackBody">
+                </tbody>
+
+            </table>
+
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+    @*for circular*@
+
+    <div class="card card-secondary">
+
+        <div class="card-body">
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-striped" style="width:100%" id="CircularsListForDeshboard">
+                    <thead>
+                        <tr>
+
+                            <th>&nbsp;Action</th>
+
+
+                            <th>Code</th>
+                            <th>Circular Type</th>
+                            <th>Circular Date</th>
+                            <th>Circular Details</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="modal fade" id="branchProfiles" tabindex="-1" role="dialog" aria-labelledby="Branch Profiles" data-backdrop="static">
+        <div class="modal-dialog draggable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Select Branch</h4>
+                    @*<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>*@
+                </div>
+                <div class="modal-body">
+
+                    <table class="table table-bordered  table-sm table-hover" id="tBranchProfiles">
+                        <thead>
+                            <tr>
+                                <th hidden>Branch ID</th>
+                                <th>Branch Code</th>
+                                <th>Branch Name</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="tbdBranchProfiles" class="cursorHand">
+
+                            @foreach (BranchProfile item in Model)
+                            {
+                                <tr>
+                                    <td hidden>@item.BranchID</td>
+                                    <td>@item.BranchCode</td>
+                                    <td>@item.BranchName</td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+@section scripts{
+    <script src="/js/app/Controllers/DashController.js"></script>
+
+
+
+    <script src="/js/app/Services/CommonService.js"></script>
+    <script src="/js/app/Services/CircularsService.js"></script>
+    <script src="/js/app/Controllers/CircularsController.js"></script>
+
+
+
+    <script src="/js/app/Services/AuditFeedBack/AuditFeedbackService.js"></script>
+    <script src="/js/app/Services/AuditIssue/AuditIssueService.js"></script>
+    <script src="/js/app/Services/Audit/AuditService.js"></script>
+    <script src="/js/app/Controllers/Audit/AuditController.js"></script>
+
+
+    @*<script src="https://cdn.jsdelivr.net/npm/progressbar.js@1.0.1/dist/progressbar.min.js"></script>*@
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+
+
+    <script>
+        $(document).ready(function () {
+
+
+
+
+
+            DashController.init(@Model.Count);
+
+
+            CircularsController.init();
+
+            AuditController.init();
+
+        });
+    </script>
+}

@@ -1,0 +1,712 @@
+﻿@model Shampan.Models.AuditModule.AuditMaster
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+
+@{
+    var direction = Model.Edit;
+    var NameOfDirection = "Audit";
+
+    if (direction == "audit" || direction == "issue" || direction == "feedback")
+    {
+        direction = "Index";
+        NameOfDirection = "Audit";
+    }
+    else if (direction == "auditStatus")
+    {
+        direction = "ApproveStatusIndex";
+        NameOfDirection = "Audit Approve";
+    }
+    else if (direction == "auditSelfApprove")
+    {
+        direction = "SelfApproveStatusIndex";
+        NameOfDirection = "Audit Self Status";
+    }
+    else if (direction == "issueApprove")
+    {
+        direction = "IssueApproveStatusIndex";
+        NameOfDirection = "Issue Approve";
+    }
+    else if (direction == "branchFeedbackApprove")
+    {
+        direction = "FeedBackApproveStatusIndex";
+        NameOfDirection = "Branch Feedback Approve";
+    }
+
+}
+
+@Html.Partial("_Header",new HeaderModel(){ HeaderName = "Audit Create", BreadCrums = new Dictionary<string, string>()
+{
+    {"/Audit/"+direction+"",NameOfDirection},
+    {"","Create"},
+}})
+
+
+<link href="~/css/button.css" rel="stylesheet" />
+
+
+
+@*<p>Current Page URL: @HttpContext.Current.Request.Url</p>*@
+@*<p>Current Page URL: @Context.Request.Path</p>*@
+
+
+<div class="modal fade" id="modal-default" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12">
+                    @Html.LabelFor(model => model.ReasonOfUnPost)
+                    <div class="input-group ">
+                        @Html.TextArea("ReasonOfUnPost",null, new { @class = "  form-control form-control-sm " ,@id="UnPostReason"})
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" id="modelClose">Close</button>
+                <button type="button" class="btn btn-primary Submit">Submit</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="modal fade" id="modal-defaultReject" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12">
+                    @Html.LabelFor(model => model.RejectedComments)
+                    <div class="input-group ">
+                        @Html.TextArea("RejectedComments",null, new { @class = "  form-control form-control-sm " ,@id="RejectedComments"})
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" id="modelClose">Close</button>
+                <button type="button" class="btn btn-primary RejectSubmit">Submit</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="modal-defaultApproved" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12">
+                    @Html.LabelFor(model => model.CommentsL1)
+                    <div class="input-group ">
+                        @Html.TextArea("CommentsL1",null, new { @class = "  form-control form-control-sm " ,@id="CommentsL1"})
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" id="modelClose">Close</button>
+                <button type="button" class="btn btn-primary ApprovedSubmit">Submit</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid">
+
+
+
+    @using (Html.BeginForm("CreateEdit", "Audit", FormMethod.Post, new { @Id = "frm_Audit" }))
+    {
+        <!-- Master Start-->
+        <div class="card card-secondary">
+            <div class="card-header">
+                <h3 class="card-title">Audit Master </h3>
+            </div>
+            <div class="card-body">
+
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.Operation)
+                @Html.HiddenFor(model => model.Edit)
+                @Html.HiddenFor(model => model.IsPost)
+                @Html.HiddenFor(model => model.ApproveStatus)
+
+
+
+                <div class="form-group row">
+
+
+                    <div class="col-sm-2">
+                        <div>
+                            @Html.LabelFor(model => model.Code)
+                            @Html.TextBoxFor(model =>model.Code , new { @class = "  form-control", @readonly="readonly" })
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        @Html.LabelFor(model => model.Name)
+                        @Html.TextBoxFor(model => model.Name, new { @class = "  form-control input-sm" })
+                        @Html.ValidationMessageFor(model => model.Name)
+                    </div>
+
+
+                    <div class="col-sm-3">
+                        @Html.LabelFor(model => model.StartDate)
+                        <div class="input-group date">
+                            @Html.TextBoxFor(model => model.StartDate, new { @class = "  form-control input-sm dateRange" })
+                            <div class="input-group-append">
+                                <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-3">
+                        @Html.LabelFor(model => model.EndDate)
+                        <div class="input-group date">
+
+                            @Html.TextBoxFor(model => model.EndDate, new { @class = "  form-control input-sm dateRange" })
+                            <div class="input-group-append">
+                                <div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="row form-group">
+
+                    <div class="col-sm-1 d-flex flex-column align-items-start">
+                        @Html.LabelFor(model => model.IsPlaned, new { @class = "form-check-label" })
+                        <div class="form-check">
+                            @Html.CheckBoxFor(model => model.IsPlaned, new { @class = "form-check-input" })
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.AuditTypeId)
+                        @Html.DropDownListFor(model => model.AuditTypeId, Enumerable.Empty<SelectListItem>(), new {@class = "form-control", @data_selected = Model.AuditTypeId})
+                        @Html.ValidationMessageFor(model => model.AuditTypeId)
+                    </div>
+
+
+
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.AuditStatus)
+                        @Html.DropDownListFor(model => model.AuditStatus, Enumerable.Empty<SelectListItem>(), new {@class = "form-control", @data_selected = Model.AuditStatus, @data_readonly=Model.AuditStatus})
+                        @Html.ValidationMessageFor(model => model.AuditStatus)
+                    </div>
+
+                    @*<div class="col-sm-2">
+                @Html.LabelFor(model => model.ReportStatus)
+                @Html.DropDownListFor(model => model.ReportStatus, Enumerable.Empty<SelectListItem>(), new {@class = "form-control", @data_selected = Model.ReportStatus, @data_readonly=Model.ReportStatus})
+                @Html.ValidationMessageFor(model => model.ReportStatus)
+                </div>*@
+
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.TeamId)
+                        @Html.DropDownListFor(model => model.TeamId, Enumerable.Empty<SelectListItem>(), new {@class = "form-control", @data_selected = Model.TeamId})
+                        @Html.ValidationMessageFor(model => model.TeamId)
+                    </div>
+
+
+
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.BranchID)
+                        @Html.DropDownListFor(model => model.BranchID, Enumerable.Empty<SelectListItem>(), new {@class = "form-control", @data_selected = Model.BranchID})
+                        @Html.ValidationMessageFor(model => model.BranchID)
+                    </div>
+
+
+                </div>
+
+
+                <div class="row form-group">
+                    @*<div class="col-sm-2">
+                @Html.LabelFor(model => model.Location)
+                @Html.TextBoxFor( model => model.Location, new { @class = " input-sm form-control" })
+                @Html.ValidationMessageFor(model => model.Location)
+                </div>*@
+
+
+                    <div class="col-sm-2">
+                        @Html.LabelFor(model => model.BusinessTarget)
+                        @Html.TextBoxFor( model => model.BusinessTarget, new { @class = " input-sm form-control" })
+                        @Html.ValidationMessageFor(model => model.BusinessTarget)
+                    </div>
+
+
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-sm-6">
+                        @Html.LabelFor(model => model.Remarks)
+
+                        @Html.TextBoxFor( model => model.Remarks, new { @class = " input-sm form-control" })
+                        @Html.ValidationMessageFor(model => model.Remarks)
+                    </div>
+                </div>
+
+                @*<textarea id="Remarks" name="Remarks"></textarea>*@
+
+
+                @*
+            <div class="form-group">
+            <label asp-for="Attachments" class="control-label">Files</label>
+            <input asp-for="Attachments" type="file" class="form-control-file" multiple />
+            <span asp-validation-for="Attachments" class="text-danger"></span>
+            </div>
+            *@
+
+
+
+
+            </div>
+        </div>
+
+        <!-- Master End-->
+    }
+
+    @*@if (Model.Edit.Equals("audit", StringComparison.CurrentCultureIgnoreCase))
+    {
+
+    <div class="card">
+    <div class="card-header p-2">
+    @if (Model.Operation.Equals("update", StringComparison.OrdinalIgnoreCase))
+    {
+    <button type="button" class="btn btn-success  pt-1 btnSave">Update Audit</button>
+    }
+    else
+    {
+    <button type="button" class="btn btn-success  pt-1 btnSave">
+
+    Save Audit
+    </button>
+    }
+    </div>
+    </div>
+    }*@
+
+    @if (Model.Edit.Equals("SendEmail") || Model.Edit.Equals("auditStatus") || Model.Edit.Equals("auditSelfApprove") || Model.Edit.Equals("issueApprove") || Model.Edit.Equals("branchFeedbackApprove"))
+    {
+        if (Model.Edit.Equals("SendEmail"))
+        {
+            <div class="card">
+                <div class="card-header p-2">
+                    <button type="button" class="btnSendEmail btn btn-lg btn-primary" data-toggle="modal" >Send Email</button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <div class="card-header p-2">
+                    <button type="button" class="button btnReject sslUnPost" data-toggle="modal" data-target="#modal-defaultReject">Reject</button>
+                    <button type="button" class="button btnApproved sslUpdate" data-toggle="modal" data-target="#modal-defaultApproved">Approved</button>
+                </div>
+            </div>
+        }
+
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-header p-2">
+
+                @if (Model.Operation.Equals("update", StringComparison.OrdinalIgnoreCase))
+                {
+                    <button type="button" class="button btnSave sslUpdate">Update</button>
+                    <button type="button" class="button btnPost sslPost">Post</button>
+
+
+                    if (Model.IsPost.Equals("Y", StringComparison.OrdinalIgnoreCase))
+                    {
+
+                        <button type="button" class="button btnUnPost sslUnPost" data-toggle="modal" data-target="#modal-default">UnPost</button>
+
+
+                        @*<button type="button" class="button btnReject sslUnPost" data-toggle="modal" data-target="#modal-defaultReject">Reject</button>
+            <button type="button" class="button btnApproved sslUpdate" data-toggle="modal" data-target="#modal-defaultApproved">Approved</button>*@
+
+                    }
+                    else
+                    {
+                        <button type="button" class="button btnUnPost sslUnPost" data-toggle="modal" style="display:none;" data-target="#modal-default">UnPost</button>
+
+                        @*<button type="button" class="button btnReject sslUnPost" data-toggle="modal" style="display:none;" data-target="#modal-defaultReject">Reject</button>
+            <button type="button" class="button btnApproved sslUpdate" data-toggle="modal" style="display:none;" data-target="#modal-defaultApproved">Approved</button>*@
+
+                        //btnReject
+                        //btnApproved
+                    }
+
+                }
+                else
+                {
+                    <button class="button btnSave sslSave" type="button" id="">Save</button>
+
+                    @*<button class="button btnExcelSave sslSave" type="button" id="">ExcelSave</button>*@
+
+                    <button class="button btnPost sslPost" type="button" id="SavePost" style="display:none;">Post</button>
+
+
+                    <button type="button" class="button btnUnPost sslUnPost" data-toggle="modal" style="display:none;" data-target="#modal-default">UnPost</button>
+
+                    @*<button type="button" class="button btnReject sslUnPost" data-toggle="modal" style="display:none;" data-target="#modal-defaultReject">Reject</button>
+            <button type="button" class="button btnApproved sslUpdate" data-toggle="modal" style="display:none;" data-target="#modal-defaultApproved">Approved</button>*@
+
+
+                }
+
+            </div>
+        </div>
+
+    }
+
+
+
+
+
+
+
+
+    <div id="auditReportStatusModal" class="modal fade"></div>
+
+    <div id="areaModal" class="modal fade"></div>
+
+    <div id="IssueModal" class="modal fade"></div>
+
+    <div id="FeedbackModal" class="modal fade"></div>
+
+    <div id="BranchFeedbackModal" class="modal fade"></div>
+
+    <div id="AuditUser" class="modal fade"></div>
+
+    <div id="AuditIssueUser" class="modal fade"></div>
+
+    <div style="display: none; width: 100%;" id="allSections">
+
+
+        <div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <h3 class="card-title"> Area Table</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+
+
+                                    @if (Model.Edit.Equals("audit", StringComparison.CurrentCultureIgnoreCase))
+                                    {
+                                        <button type="button" title="Add Area Details" id="addArea" class="button NewButton addNewButton mb-2">Add Area</button>
+                                    }
+
+
+                                    <table class="table table-bordered" id="AuditAreasDetails" style="width: 100% !important;">
+                                        <thead>
+                                            <tr>
+                                                <th>AuditArea</th>
+                                                <th hidden="true">AreaDetails</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="AreaBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <h3 class="card-title"> Team Members</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+
+                                <div class="col-12">
+                                    @if (Model.Edit.Equals("audit", StringComparison.CurrentCultureIgnoreCase))
+                                    {
+                                        <button type="button" title="Add Email Details" id="addAuditUser" class="button NewButton addNewButton mb-2">Add User Email</button>
+                                    }
+                                    <table class="table table-bordered" id="AuditUserDetails" style="width: 100% !important;">
+                                        <thead>
+                                            <tr>
+                                                <th>User Name</th>
+                                                <th>Email</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="UserBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*Issues*@
+
+        <div class="card card-secondary">
+            <div class="card-header">
+                <h3 class="card-title">Issues</h3>
+            </div>
+            <div class="card-body">
+
+                @if (Model.Edit.Equals("issue", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    @*<i class="fa fa-plus"></i>*@
+                    <button type="button" title="Add Issue Details" id="addIssue" class="button NewButton addNewButton mb-2"> Add Issue</button>
+
+                }
+                <table class="table table-bordered" id="AuditIssueDetails" style="width: 100% !important;">
+                    <thead>
+                        <tr>
+                            <th>Issue Name</th>
+                            <th>Issue Priority</th>
+                            <th>Date Of Submission</th>
+
+                            <th>Raised by</th>
+                            <th>Post</th>
+
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="IssueBody">
+                    </tbody>
+
+                </table>
+
+
+
+
+
+
+            </div>
+
+
+        </div>
+
+
+        @*</div>*@
+
+
+
+
+        @*feedback index*@
+
+
+        <div class="card card-secondary">
+            <div class="card-header">
+                <h3 class="card-title"> Feedback</h3>
+            </div>
+            <div class="card-body">
+
+                @if (Model.Edit.Equals("feedback", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    @*<i class="fa fa-plus"></i> *@
+                    <button type="button" title="Add Issue Details" id="addFeedback" class="button NewButton addNewButton mb-2">Add Feedback</button>
+
+                }
+                <table class="table table-bordered" id="AuditFeedbackDetails" style="width: 100% !important;">
+                    <thead>
+                        <tr>
+
+                            <th>Issue Name</th>
+                            <th>Feedback Heading</th>
+
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="FeedbackBody">
+                    </tbody>
+
+                </table>
+
+
+            </div>
+        </div>
+
+        @*branch feedback index*@
+
+
+        <div class="card card-secondary">
+            <div class="card-header">
+                <h3 class="card-title">Branch Feedback</h3>
+            </div>
+            <div class="card-body">
+
+                @if (Model.Edit.Equals("Branchfeedback", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    @*<i class="fa fa-plus"></i>*@
+                    <button type="button" title="Add Issue Details" id="addBranchFeedback" class="button NewButton addNewButton mb-2">Add Branch Feedback</button>
+
+                }
+                <table class="table table-bordered" id="AuditBranchFeedbackDetails" style="width: 100% !important;">
+                    <thead>
+                        <tr>
+
+                            <th>Issue Name</th>
+                            <th>Feedback Heading</th>
+                            <th>Post</th>
+                            <th>Action</th>
+
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody id="BranchFeedbackBody">
+                    </tbody>
+
+                </table>
+
+
+            </div>
+        </div>
+
+
+
+
+
+        @*Audit Response Index*@
+
+
+        @*<div class="card card-secondary">
+        <div class="card-header">
+        <h3 class="card-title">Audit Response</h3>
+        </div>
+        <div class="card-body">
+
+
+        <table class="table table-bordered" id="AuditResponseDetails" style="width: 100% !important;">
+        <thead>
+        <tr>
+
+        <th>Audit Name</th>
+        <th>Issue Name</th>
+        <th>Issue Priority</th>
+        <th>Date Of Summission</th>
+        <th>Action</th>
+
+
+
+
+        </tr>
+        </thead>
+        <tbody id="BranchFeedbackBody">
+        </tbody>
+
+        </table>
+
+
+        </div>
+        </div>*@
+
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+@section scripts{
+    <script src="/js/app/Services/CommonService.js"></script>
+
+
+
+    <script src="/js/app/Services/AuditFeedBack/AuditFeedbackService.js"></script>
+    <script src="/js/app/Services/AuditIssue/AuditIssueService.js"></script>
+    <script src="/js/app/Services/Audit/AuditService.js"></script>
+    <script src="/js/app/Controllers/Audit/AuditController.js"></script>
+    @*<script src="/js/app/Controllers/Audit/AuditController.js"></script>*@
+    <script src="/js/app/controllers/dashcontroller.js"></script>
+    @*change*@
+    @*<script src="/js/app/Controllers/Audit/AuditIssueController.js"></script>*@
+    @*end*@
+
+
+    <script src="/js/app/Services/AuditApproveStatusService.js"></script>
+    <script src="/js/app/Controllers/AuditApproveStatusController.js"></script>
+
+
+
+    <script>
+
+        $(document).ready(function () {
+
+
+
+            AuditController.init();
+            AuditApproveStatusController.init();
+
+
+
+
+        });
+
+    </script>
+
+
+}
+

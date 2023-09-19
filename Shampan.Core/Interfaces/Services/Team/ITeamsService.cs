@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Shampan.Models;
+
+namespace Shampan.Core.Interfaces.Services.Team
+{
+	public interface ITeamsService : IBaseService<Teams>
+	{
+
+		string GetSingleValeByID(string tableName, string ReturnFields, string[] conditionalFields, string[] conditionalValue);
+
+
+	}
+}

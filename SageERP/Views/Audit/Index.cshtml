@@ -1,0 +1,155 @@
+﻿@model Shampan.Models.AuditModule.AuditMaster
+
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+
+
+@Html.Partial("_Header",new HeaderModel(){ HeaderName = "Audit", BreadCrums = new Dictionary<string, string>()
+{
+    {"/Audit","Audit"},
+    {"","Index"},
+}})
+
+<link href="~/css/button.css" rel="stylesheet" />
+
+
+<div class="container-fluid">
+	<div class="card">
+		<div class="card-header p-2">
+
+			@*<button type="button" title="Add New Audit"
+			data-url="/Audit/Create" onclick="GoTo(this)"
+			id="" class="NewButton">
+			<i class="fa fa-plus" aria-hidden="true"></i>
+			&nbsp;
+			New
+			</button>*@
+
+			<button type="button" title="Add New Audit"
+					data-url="/Audit/Create" onclick="GoTo(this)"
+					id="" class="button NewButton addNewButton">
+				New
+			</button>
+
+
+			<button type="button" title=""
+					id="PostAU" class="button sslPost">
+
+				Post
+			</button>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+<div class="container-fluid">
+	<div class="card card-secondary">
+		<div class="card-header">
+			<h3 class="card-title">
+				List Of Data
+			</h3>
+
+		</div>
+		<div class="card-body">
+			<table class="table table-bordered table-striped" id="AuditList">
+				<thead>
+					<tr>
+
+						<th class="action"><input type="checkbox" class="chkAll" />&nbsp;Action</th>
+
+						@*<th>Action</th>*@
+						<th>Code </th>
+						<th>Name</th>
+						<th>Start Date</th>
+						<th>End Date</th>
+
+						<th class="bool">Post</th>
+						@*<th>Post</th>*@
+
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>
+
+
+<div id="forauditstatusModal" class="modal fade"></div>
+
+
+
+
+@section scripts{
+
+	<script src="/js/app/Services/AuditFeedBack/AuditFeedbackService.js"></script>
+	<script src="/js/app/Services/AuditIssue/AuditIssueService.js"></script>
+	<script src="/js/app/Services/Audit/AuditService.js"></script>
+	<script src="/js/app/Controllers/Audit/AuditController.js"></script>
+
+	<script>
+
+
+		$(document).ready(function () {
+
+
+			AuditController.init();
+
+
+			//function autoReloadPageOnce() {
+			//	location.reload();
+			//}
+
+
+			//window.addEventListener('load', function () {
+			//	autoReloadPageOnce();
+			//});
+
+
+
+			//function autoReloadPage() {
+			//	setTimeout(function () {
+			//		location.reload();
+			//	}, 1000);
+			//}
+
+			//window.addEventListener('load', function () {
+			//	autoReloadPage();
+			//});
+
+			//var pageReloaded = false;
+			//var eventliser = true;
+
+			//function autoReloadPageOnce() {
+			//	if (!pageReloaded) {
+			//		location.reload();
+			//		pageReloaded = true;
+			//	}
+			//}
+
+			//      if(eventliser)
+			//{
+			//	window.addEventListener('load', function () {
+			//		autoReloadPageOnce();
+			//		eventliser=false;
+			//	});
+			//}
+
+
+		});
+
+
+
+
+
+
+	</script>
+}
